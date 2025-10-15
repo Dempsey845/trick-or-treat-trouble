@@ -1,10 +1,13 @@
 import math
 
 import pygame
+from cogworks import GameObject
 from cogworks.components.rigidbody2d import Rigidbody2D
 from cogworks.components.script_component import ScriptComponent
 from cogworks.components.sprite import Sprite
 from cogworks.pygame_wrappers.input_manager import InputManager
+
+from assets.scripts.candy import Candy
 
 
 class PlayerMovement(ScriptComponent):
@@ -23,6 +26,10 @@ class PlayerMovement(ScriptComponent):
         self.rigidbody = self.game_object.get_component(Rigidbody2D)
         self.input = InputManager.get_instance()
         self.sprite = self.game_object.get_component(Sprite)
+
+        candy_go = GameObject("Candy", 1, 100, 100, scale_x=0.5, scale_y=0.5)
+        candy_go.add_component(Candy())
+        self.game_object.scene.instantiate_game_object(candy_go)
 
     def update(self, dt: float):
         if not self.sprite:
