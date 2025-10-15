@@ -20,9 +20,15 @@ class PlayerCandy(ScriptComponent):
         if InputManager.get_instance().is_key_down(pygame.K_r):
             self.game_object.scene.restart()
 
-    def add_candy(self):
-        self.candy += 1
+    def add_candy(self, amount=1):
+        self.candy += amount
 
+        self.update_text()
+
+    def take_candy(self, amount=1):
+        self.candy -= amount
+        if self.candy < 0:
+            self.candy = 0
         self.update_text()
 
     def update_text(self):

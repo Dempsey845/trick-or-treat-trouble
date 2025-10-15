@@ -10,7 +10,7 @@ class InteractPrompt(ScriptComponent):
 
     def start(self):
         ui_transform = UITransform(
-            x=self.x, y=self.y, width=40, height=40, anchor="center", world_space=True, debug=True
+            x=self.x, y=self.y, width=40, height=40, anchor="center", world_space=True, debug=False
         )
         self.game_object.add_component(ui_transform)
         label = UILabel("E", font_size=40, color=(255, 255, 255))

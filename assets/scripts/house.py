@@ -12,6 +12,8 @@ from cogworks.components.ui.ui_transform import UITransform
 from cogworks.pygame_wrappers.input_manager import InputManager
 
 from assets.scripts.interact_prompt import InteractPrompt
+from assets.scripts.level_manager import LevelManager
+from assets.scripts.trick_manager import TrickManager
 from assets.scripts.trick_or_treat_prompt import TrickOrTreatPrompt
 
 
@@ -24,9 +26,10 @@ class House(ScriptComponent):
         self.house_width = 53 * self.house_scale
         self.house_height = 40 * self.house_scale
         self.prompt_ref = None
+        self.trick_manager = None
+        self.dog_spawn_pos = (0, 0)
 
     def start(self) -> None:
-
         x, y = self.game_object.scene.camera_component.get_world_position_of_point("topcenter")
         house_scale = self.house_scale
         house_width = self.house_width
@@ -34,14 +37,19 @@ class House(ScriptComponent):
         self.game_object.transform.set_local_scale(house_scale)
         self.game_object.transform.set_local_position(x, y + house_height//2)
 
+        self.dog_spawn_pos = (x, y + house_height)
+
         sprite = Sprite(image_path="images/house.png", pixel_art_mode=True)
         self.game_object.add_component(sprite)
 
         body = Rigidbody2D(debug=False, static=True, width=house_width, height=house_height - 50)
         self.game_object.add_component(body)
 
-        trigger_collider = TriggerCollider(layer="House", width=50, height=50, offset_y=house_height//2, debug=True)
+        trigger_collider = TriggerCollider(layer="House", width=50, height=50, offset_y=house_height//2, debug=False)
         self.game_object.add_component(trigger_collider)
+
+        self.trick_manager = TrickManager(self)
+        self.game_object.add_component(self.trick_manager)
 
         self.input = InputManager.get_instance()
         self.can_knock = True
@@ -52,6 +60,13 @@ class House(ScriptComponent):
         prompt = GameObject(name=name)
         prompt.add_component(TrickOrTreatPrompt(trick))
         self.game_object.scene.instantiate_game_object(prompt)
+
+        if trick:
+            self.trick_manager.perform_random_trick()
+        else:
+            player_candy = LevelManager.get_instance().get_player_candy()()
+            if player_candy:
+                player_candy.add_candy()
 
     def on_trigger_stay(self, other):
         if not self.input:
