@@ -18,19 +18,19 @@ from assets.scripts.trick_or_treat_prompt import TrickOrTreatPrompt
 
 
 class House(ScriptComponent):
-    def __init__(self):
+    def __init__(self, house_width=32, house_height=32, house_scale=6):
         super().__init__()
         self.input = None
         self.can_knock = True
-        self.house_scale = 4
-        self.house_width = 53 * self.house_scale
-        self.house_height = 40 * self.house_scale
+        self.house_scale = 6
+        self.house_width = house_width * house_scale
+        self.house_height = house_height * house_scale
         self.prompt_ref = None
         self.trick_manager = None
         self.dog_spawn_pos = (0, 0)
 
     def start(self) -> None:
-        x, y = self.game_object.scene.camera_component.get_world_position_of_point("topcenter")
+        x, y = self.game_object.transform.get_local_position()
         house_scale = self.house_scale
         house_width = self.house_width
         house_height = self.house_height
@@ -39,13 +39,22 @@ class House(ScriptComponent):
 
         self.dog_spawn_pos = (x, y + house_height)
 
-        sprite = Sprite(image_path="images/house.png", pixel_art_mode=True)
+        sprite = Sprite(image_path="images/house_base.png", pixel_art_mode=True)
         self.game_object.add_component(sprite)
 
-        body = Rigidbody2D(debug=False, static=True, width=house_width, height=house_height - 50)
+        y += self.house_height//2
+        roof = GameObject("Roof", x=x, y=y, scale_x = self.house_scale, scale_y = self.house_scale, z_index=5)
+        roof.add_component(Sprite(image_path="images/house_roof.png", pixel_art_mode=True))
+        self.game_object.scene.instantiate_game_object(roof)
+
+        decoration = GameObject("Decoration", x=x, y=y, scale_x=self.house_scale, scale_y=self.house_scale, z_index=5)
+        decoration.add_component(Sprite(image_path="images/house_dec.png", pixel_art_mode=True))
+        self.game_object.scene.instantiate_game_object(decoration)
+
+        body = Rigidbody2D(debug=True, static=True, width=house_width-40, height=house_height - 50)
         self.game_object.add_component(body)
 
-        trigger_collider = TriggerCollider(layer="House", width=50, height=50, offset_y=house_height//2, debug=False)
+        trigger_collider = TriggerCollider(layer="House", width=50, height=50, offset_y=house_height//2, debug=True)
         self.game_object.add_component(trigger_collider)
 
         self.trick_manager = TrickManager(self)
@@ -68,6 +77,10 @@ class House(ScriptComponent):
             if player_candy:
                 player_candy.add_candy()
 
+        prompt = self.prompt_ref()
+        if prompt:
+            prompt.destroy()
+
     def on_trigger_stay(self, other):
         if not self.input:
             return
@@ -77,6 +90,9 @@ class House(ScriptComponent):
             self.knock()
 
     def on_trigger_enter(self, other):
+        if not self.can_knock:
+            return
+
         prompt = GameObject("Prompt", z_index=50)
         x, y = self.game_object.transform.get_world_position()
         prompt.add_component(InteractPrompt(x, y+(self.house_height//2)-25))
