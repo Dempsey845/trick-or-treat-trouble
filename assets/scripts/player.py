@@ -45,7 +45,7 @@ class Player(ScriptComponent):
         player_animation_controller = PlayerAnimationController()
         self.game_object.add_component(player_animation_controller)
 
-        player_trigger_collider = TriggerCollider(debug=False, layer_mask=["Candy", "House"], layer="Player")
+        player_trigger_collider = TriggerCollider(debug=False, layer_mask=["Candy", "House", "Cobweb"], layer="Player")
         self.game_object.add_component(player_trigger_collider)
 
         player_candy = PlayerCandy(candy_label)
@@ -76,3 +76,11 @@ class Player(ScriptComponent):
     def update(self, dt:float):
         if self.line_renderer:
             self.line_renderer.point_a=self.game_object.transform.get_local_position()
+
+    def on_remove(self):
+        lm = LevelManager.get_instance()
+        lm.deregister_player()
+
+    def on_disabled(self):
+        lm = LevelManager.get_instance()
+        lm.deregister_player()

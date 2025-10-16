@@ -9,6 +9,7 @@ from cogworks.components.sprite import Sprite
 from cogworks.components.trigger_collider import TriggerCollider
 from cogworks.pygame_wrappers.input_manager import InputManager
 
+from assets.scripts.cogweb import Cobweb
 from assets.scripts.interact_prompt import InteractPrompt
 from assets.scripts.level_manager import LevelManager
 from assets.scripts.trick_manager import TrickManager
@@ -50,7 +51,8 @@ class House(ScriptComponent):
         self.game_object.scene.instantiate_game_object(roof)
 
         decoration = GameObject("Decoration", x=x, y=y, scale_x=self.house_scale, scale_y=self.house_scale, z_index=5)
-        decoration.add_component(Sprite(image_path="images/house_dec.png", pixel_art_mode=True))
+        random_dec = random.randint(1, 2)
+        decoration.add_component(Sprite(image_path=f"images/house_dec_{random_dec}.png", pixel_art_mode=True))
         self.game_object.scene.instantiate_game_object(decoration)
 
         body = Rigidbody2D(debug=True, static=True, width=house_width-40, height=house_height - 50)
@@ -64,6 +66,30 @@ class House(ScriptComponent):
 
         self.input = InputManager.get_instance()
         self.can_knock = True
+
+        x, y = self.game_object.transform.get_local_position()
+        web_scale = 2.5
+        cobweb_1 = GameObject("Cobweb", z_index=2, x=x + self.house_width//2 + 32, y=y, scale_x=web_scale, scale_y=web_scale)
+        cobweb_1.add_component(Cobweb())
+
+        cobweb_2 = GameObject("Cobweb2", z_index=2, x=x - self.house_width//2 - 32, y=y + random.randint(0, 64), scale_x=web_scale, scale_y=web_scale)
+        cobweb_2.add_component(Cobweb())
+
+        cobweb_3 = GameObject("Cobweb3", z_index=2, x=x - 64, y=y + self.house_height//2, scale_x=web_scale, scale_y=web_scale)
+        cobweb_3.add_component(Cobweb())
+
+        cobweb_4 = GameObject("Cobweb4", z_index=2, x=x + 64, y=y + self.house_height // 2, scale_x=web_scale,
+                              scale_y=web_scale)
+        cobweb_4.add_component(Cobweb())
+
+        if random.randint(0, 1) == 0:
+            self.game_object.scene.instantiate_game_object(cobweb_1)
+        if random.randint(0, 1) == 0:
+            self.game_object.scene.instantiate_game_object(cobweb_2)
+        if random.randint(0, 1) == 0:
+            self.game_object.scene.instantiate_game_object(cobweb_3)
+        else:
+            self.game_object.scene.instantiate_game_object(cobweb_4)
 
         HouseManager.get_instance().register_house(self)
 
@@ -94,6 +120,8 @@ class House(ScriptComponent):
         prompt = self.prompt_ref()
         if prompt:
             prompt.destroy()
+
+        self.game_object.get_component("Sprite").change_image("images/house_base_closed.png")
 
     def on_trigger_stay(self, other):
         if not self.input:

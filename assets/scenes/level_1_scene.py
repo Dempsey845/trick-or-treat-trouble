@@ -4,6 +4,8 @@ from cogworks.pygame_wrappers.window import Window
 
 from assets.scripts.house import House
 from assets.scripts.player import Player
+from assets.scripts.road_manager import RoadManager
+from assets.scripts.witch_head import WitchHead
 
 
 def setup_level_1_scene(engine):
@@ -50,7 +52,11 @@ def setup_level_1_scene(engine):
         house_ob.add_component(House(house_width=house_width, house_height=house_height, house_scale=house_scale))
         level_1_scene.add_game_object(house_ob)
 
+    road_manager = GameObject("Road Manager")
+    road_manager.add_component(RoadManager())
+
     level_1_scene.add_game_object(player_ob)
     level_1_scene.add_game_object(background)
+    level_1_scene.add_game_object(road_manager)
 
     return level_1_scene

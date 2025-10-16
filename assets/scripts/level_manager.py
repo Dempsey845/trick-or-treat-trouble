@@ -40,3 +40,8 @@ class LevelManager:
         if player_candy:
             return weakref.ref(player_candy)
         return None
+
+    def invert_player_movement(self, duration:float):
+        player_movement = self.get_player().get_component("PlayerMovement")
+        if player_movement:
+            player_movement.invert_movement(duration)
