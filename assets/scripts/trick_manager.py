@@ -13,7 +13,7 @@ class TrickManager(ScriptComponent):
         self.spawn_dog()
 
     def spawn_dog(self):
-        dog = GameObject("Dog", x=self.house.dog_spawn_pos[0], y=self.house.dog_spawn_pos[1], scale_x=4, scale_y=4)
-        dog.add_component(Dog(self.house.dog_spawn_pos))
+        dog = GameObject("Dog", x=self.house.door_pos[0], y=self.house.door_pos[1], scale_x=4, scale_y=4)
+        dog.add_component(Dog(self.house.door_pos))
 
         self.game_object.scene.instantiate_game_object(dog)

@@ -1,3 +1,5 @@
+import random
+
 from cogworks import GameObject
 from cogworks.components.linerenderer import LineRenderer
 from cogworks.components.rigidbody2d import Rigidbody2D
@@ -7,11 +9,11 @@ from cogworks.components.trigger_collider import TriggerCollider
 from cogworks.components.ui.ui_label import UILabel
 from cogworks.components.ui.ui_transform import UITransform
 
+from assets.scripts.house_manager import HouseManager
 from assets.scripts.level_manager import LevelManager
 from assets.scripts.player_animation_controller import PlayerAnimationController
 from assets.scripts.player_candy import PlayerCandy
 from assets.scripts.player_movement import PlayerMovement
-from cogworks.pygame_wrappers.window import Window
 
 
 class Player(ScriptComponent):
@@ -24,12 +26,10 @@ class Player(ScriptComponent):
         lm = LevelManager.get_instance()
         lm.register_player(self.game_object)
 
-        candy_label_ob = GameObject("Candy Label")
+        candy_label_ob = GameObject("Candy Label", z_index=100)
         candy_label_ob.add_component(UITransform(relative=True, width=0.1, height=0.1, y=0, x=0, anchor="topleft"))
-        candy_label = UILabel("Candy: ")
+        candy_label = UILabel("Candy: ", font_size=40)
         candy_label_ob.add_component(candy_label)
-
-        window_width, window_height = Window.get_instance().get_size()
 
         self.game_object.scene.instantiate_game_object(candy_label_ob)
 
@@ -51,11 +51,28 @@ class Player(ScriptComponent):
         player_candy = PlayerCandy(candy_label)
         self.game_object.add_component(player_candy)
 
-        self.line_renderer = LineRenderer(point_a=(window_width / 2, window_height / 2),
-                                           point_b=((window_width / 2) + 100, (window_height / 2) + 100),
-                                           style="dashed",
-                                           color=(255, 255, 0), alpha=150)
+    def add_marker(self):
+        self.remove_marker()
+
+        trick_marker = random.randint(0, 1) == 0
+
+        point_a = self.game_object.transform.get_local_position()
+        point_b = HouseManager.get_instance().get_random_treat_house_door_pos() if not trick_marker else HouseManager.get_instance().get_random_trick_house_door_pos()
+
+        if point_b is None:
+            return
+
+        self.line_renderer = LineRenderer(point_a=point_a,
+                                          point_b=point_b,
+                                          style="dashed",
+                                          color=(255, 255, 0), alpha=150)
         self.game_object.add_component(self.line_renderer)
 
+    def remove_marker(self):
+        if self.line_renderer:
+            self.line_renderer = None
+            self.game_object.remove_component(LineRenderer)
+
     def update(self, dt:float):
-        self.line_renderer.point_a=self.game_object.transform.get_local_position()
+        if self.line_renderer:
+            self.line_renderer.point_a=self.game_object.transform.get_local_position()

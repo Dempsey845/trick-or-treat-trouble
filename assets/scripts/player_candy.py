@@ -9,11 +9,11 @@ from cogworks.pygame_wrappers.input_manager import InputManager
 class PlayerCandy(ScriptComponent):
     def __init__(self, candy_label):
         super().__init__()
-        self.candy = 5
+        self.candy = 0
         self.candy_label_ref = weakref.ref(candy_label)
 
     def start(self) -> None:
-        self.candy = 5
+        self.candy = 0
         self.update_text()
 
     def update(self, dt: float) -> None:

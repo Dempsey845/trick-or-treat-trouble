@@ -7,8 +7,6 @@ from cogworks.components.rigidbody2d import Rigidbody2D
 from cogworks.components.script_component import ScriptComponent
 from cogworks.components.sprite import Sprite
 from cogworks.components.trigger_collider import TriggerCollider
-from cogworks.components.ui.ui_label import UILabel
-from cogworks.components.ui.ui_transform import UITransform
 from cogworks.pygame_wrappers.input_manager import InputManager
 
 from assets.scripts.interact_prompt import InteractPrompt
@@ -16,10 +14,13 @@ from assets.scripts.level_manager import LevelManager
 from assets.scripts.trick_manager import TrickManager
 from assets.scripts.trick_or_treat_prompt import TrickOrTreatPrompt
 
+from assets.scripts.house_manager import HouseManager
+
 
 class House(ScriptComponent):
     def __init__(self, house_width=32, house_height=32, house_scale=6):
         super().__init__()
+        self.player_ref = None
         self.input = None
         self.can_knock = True
         self.house_scale = 6
@@ -27,7 +28,8 @@ class House(ScriptComponent):
         self.house_height = house_height * house_scale
         self.prompt_ref = None
         self.trick_manager = None
-        self.dog_spawn_pos = (0, 0)
+        self.door_pos = (0, 0)
+        self.is_trick = False
 
     def start(self) -> None:
         x, y = self.game_object.transform.get_local_position()
@@ -37,7 +39,7 @@ class House(ScriptComponent):
         self.game_object.transform.set_local_scale(house_scale)
         self.game_object.transform.set_local_position(x, y + house_height//2)
 
-        self.dog_spawn_pos = (x, y + house_height)
+        self.door_pos = (x, y + house_height)
 
         sprite = Sprite(image_path="images/house_base.png", pixel_art_mode=True)
         self.game_object.add_component(sprite)
@@ -63,19 +65,31 @@ class House(ScriptComponent):
         self.input = InputManager.get_instance()
         self.can_knock = True
 
+        HouseManager.get_instance().register_house(self)
+
     def knock(self):
-        trick = random.randint(0, 1) == 0
-        name = "Trick Prompt" if trick else "Treat Prompt"
+        is_trick = self.is_trick
+        name = "Trick Prompt" if is_trick else "Treat Prompt"
         prompt = GameObject(name=name)
-        prompt.add_component(TrickOrTreatPrompt(trick))
+        prompt.add_component(TrickOrTreatPrompt(is_trick))
         self.game_object.scene.instantiate_game_object(prompt)
 
-        if trick:
+        player = self.player_ref()
+        if player:
+            player.get_component("Player").remove_marker()
+
+        if is_trick:
             self.trick_manager.perform_random_trick()
         else:
             player_candy = LevelManager.get_instance().get_player_candy()()
             if player_candy:
-                player_candy.add_candy()
+                player_candy.add_candy(random.randint(1, 3))
+
+            give_marker = random.randint(0, 1) == 0
+            player = self.player_ref()
+
+            if give_marker and player:
+                player.get_component("Player").add_marker()
 
         prompt = self.prompt_ref()
         if prompt:
@@ -92,6 +106,8 @@ class House(ScriptComponent):
     def on_trigger_enter(self, other):
         if not self.can_knock:
             return
+
+        self.player_ref = weakref.ref(other.game_object)
 
         prompt = GameObject("Prompt", z_index=50)
         x, y = self.game_object.transform.get_world_position()

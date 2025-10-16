@@ -8,12 +8,12 @@ from assets.scripts.level_manager import LevelManager
 class Dog(ScriptComponent):
     def __init__(self, home_position):
         super().__init__()
-        self.move_speed = 160
+        self.move_speed = 180
         self.attack_distance = 55
         self.attack_rate = 1
         self.cooldown_timer = self.attack_rate  # start on cooldown
         self.can_attack = False  # start unable to attack
-        self.attack_max = 3
+        self.attack_max = 2
         self.attack_count = 0
         self.attack_time = 7.0
         self.attack_timer = 0.0
