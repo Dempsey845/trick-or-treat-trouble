@@ -27,7 +27,7 @@ class Player(ScriptComponent):
         lm.register_player(self.game_object)
 
         candy_label_ob = GameObject("Candy Label", z_index=100)
-        candy_label_ob.add_component(UITransform(relative=True, width=0.1, height=0.1, y=0, x=0, anchor="topleft"))
+        candy_label_ob.add_component(UITransform(relative=True, width=0.15, height=0.05, y=0.025, x=0.05, debug=True, anchor="topleft"))
         candy_label = UILabel("Candy: ", font_size=40)
         candy_label_ob.add_component(candy_label)
 
@@ -45,7 +45,8 @@ class Player(ScriptComponent):
         player_animation_controller = PlayerAnimationController()
         self.game_object.add_component(player_animation_controller)
 
-        player_trigger_collider = TriggerCollider(debug=False, layer_mask=["Candy", "House", "Cobweb"], layer="Player")
+        scale = self.game_object.transform.local_scale_x
+        player_trigger_collider = TriggerCollider(debug=True, width=12 * scale, height=14 * scale, layer_mask=["Candy", "House", "Cobweb"], layer="Player")
         self.game_object.add_component(player_trigger_collider)
 
         player_candy = PlayerCandy(candy_label)

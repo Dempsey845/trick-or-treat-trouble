@@ -7,6 +7,7 @@ from cogworks.pygame_wrappers.window import Window
 from assets.scripts.dog import Dog
 from assets.scripts.level_manager import LevelManager
 from assets.scripts.witch_head import WitchHead
+from assets.scripts.witch_particle_effect import WitchParticleEffect
 
 
 class TrickManager(ScriptComponent):
@@ -26,12 +27,18 @@ class TrickManager(ScriptComponent):
         self.game_object.scene.instantiate_game_object(dog)
 
     def spawn_witch(self):
-        window_width, window_height = Window.get_instance().get_size()
+        x, y = self.game_object.scene.camera_component.get_world_position_of_point("center")
 
-        witch_head = GameObject("Witch Head", z_index=50, x=window_width / 2, y=window_height / 2)
+        witch_head = GameObject("Witch Head", z_index=50, x=x, y=y)
         witch_head.add_component(WitchHead())
 
         self.game_object.scene.instantiate_game_object(witch_head)
 
         lm = LevelManager.get_instance()
+        x, y = lm.get_player_position()
+
+        witch_effect = GameObject("Witch Effect", z_index=9, x=x, y=y)
+        witch_effect.add_component(WitchParticleEffect())
+        self.game_object.scene.instantiate_game_object(witch_effect)
+
         lm.invert_player_movement(7)

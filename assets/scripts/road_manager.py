@@ -14,14 +14,14 @@ class RoadManager(ScriptComponent):
         # Main road
         self.main_road_start_pos = (720, 290)
         self.main_road_end_pos = (1120, 1016)
-        self.main_road_web_count = 10
+        self.main_road_web_count = 8
 
         # Side roads
         self.side_roads = [
-            {"start": (60, 285), "end": (644, 394), "count": 5},
-            {"start": (1237, 285), "end": (1858, 394), "count": 5},
-            {"start": (1237, 716), "end": (1858, 786), "count": 5},
-            {"start": (60, 700), "end": (644, 794), "count": 5},
+            {"start": (60, 285), "end": (644, 394), "count": 3},
+            {"start": (1237, 285), "end": (1858, 394), "count": 3},
+            {"start": (1237, 716), "end": (1858, 786), "count": 3},
+            {"start": (60, 700), "end": (644, 794), "count": 3},
         ]
 
     def spawn_cob_web(self, x, y):
