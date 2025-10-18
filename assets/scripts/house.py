@@ -12,6 +12,7 @@ from cogworks.pygame_wrappers.input_manager import InputManager
 from assets.scripts.cogweb import Cobweb
 from assets.scripts.interact_prompt import InteractPrompt
 from assets.scripts.level_manager import LevelManager
+from assets.scripts.scarecrow import Scarecrow
 from assets.scripts.trick_manager import TrickManager
 from assets.scripts.trick_or_treat_prompt import TrickOrTreatPrompt
 
@@ -19,7 +20,7 @@ from assets.scripts.house_manager import HouseManager
 
 
 class House(ScriptComponent):
-    def __init__(self, house_width=32, house_height=32, house_scale=6):
+    def __init__(self, house_width=32, house_height=32, house_scale=6, spawn_bottom_webs=True):
         super().__init__()
         self.player_ref = None
         self.input = None
@@ -31,6 +32,7 @@ class House(ScriptComponent):
         self.trick_manager = None
         self.door_pos = (0, 0)
         self.is_trick = False
+        self.spawn_bottom_webs = spawn_bottom_webs
 
     def start(self) -> None:
         x, y = self.game_object.transform.get_local_position()
@@ -55,10 +57,10 @@ class House(ScriptComponent):
         decoration.add_component(Sprite(image_path=f"images/house_dec_{random_dec}.png", pixel_art_mode=True))
         self.game_object.scene.instantiate_game_object(decoration)
 
-        body = Rigidbody2D(debug=True, static=True, width=house_width-40, height=house_height - 50)
+        body = Rigidbody2D(debug=False, static=True, width=house_width-40, height=house_height - 50)
         self.game_object.add_component(body)
 
-        trigger_collider = TriggerCollider(layer="House", width=50, height=50, offset_y=house_height//2, debug=True)
+        trigger_collider = TriggerCollider(layer="House", width=50, height=50, offset_y=house_height//2, debug=False)
         self.game_object.add_component(trigger_collider)
 
         self.trick_manager = TrickManager(self)
@@ -84,12 +86,20 @@ class House(ScriptComponent):
 
         if random.randint(0, 1) == 0:
             self.game_object.scene.instantiate_game_object(cobweb_1)
+
         if random.randint(0, 1) == 0:
             self.game_object.scene.instantiate_game_object(cobweb_2)
-        if random.randint(0, 1) == 0:
-            self.game_object.scene.instantiate_game_object(cobweb_3)
-        else:
-            self.game_object.scene.instantiate_game_object(cobweb_4)
+
+        if self.spawn_bottom_webs:
+            if random.randint(0, 1) == 0:
+                if random.randint(0, 1) == 0:
+                    self.game_object.scene.instantiate_game_object(cobweb_3)
+                else:
+                    self.game_object.scene.instantiate_game_object(cobweb_4)
+            else:
+                scarecrow = GameObject("Scarecrow", z_index=0, x=x + 64, y=y + self.house_height // 2)
+                scarecrow.add_component(Scarecrow())
+                self.game_object.scene.instantiate_game_object(scarecrow)
 
         HouseManager.get_instance().register_house(self)
 

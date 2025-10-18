@@ -78,27 +78,20 @@ class PlayerMovement(ScriptComponent):
         top_bound = 20
         bottom_bound = 1040
 
-        x,y = self.game_object.transform.get_local_position()
-
-        if x < left_bound and self.input_x == -1:
-            self.input_x = 0
-        elif x > right_bound and self.input_x == 1:
-            self.input_x = 0
-
-        if y < top_bound and self.input_y == -1:
-            self.input_y = 0
-        elif y > bottom_bound and self.input_y == 1:
-            self.input_y = 0
-
-    def is_out_of_bounds(self):
-        left_bound = 20
-        right_bound = 1900
-        top_bound = 20
-        bottom_bound = 1040
-
         x, y = self.game_object.transform.get_local_position()
 
-        return x < left_bound or x > right_bound or y < top_bound or y > bottom_bound
+        move_x = self.input_x * self.invert_multiplier
+        move_y = self.input_y * self.invert_multiplier
+
+        if x < left_bound and move_x < 0:
+            self.input_x = 0
+        elif x > right_bound and move_x > 0:
+            self.input_x = 0
+
+        if y < top_bound and move_y < 0:
+            self.input_y = 0
+        elif y > bottom_bound and move_y > 0:
+            self.input_y = 0
 
     def invert_movement(self, duration: float):
         self.invert_multiplier = -1

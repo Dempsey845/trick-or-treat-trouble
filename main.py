@@ -1,11 +1,13 @@
 from cogworks import Engine
 
 from assets.scenes.level_1_scene import setup_level_1_scene
+from assets.scenes.menu_scene import setup_menu_scene
 
-engine = Engine(width=1280, height=720, caption="Trick or Treat Trouble")
+engine = Engine(fps=300, width=1280, height=720, fullscreen=True, caption="Trick or Treat Trouble")
 
+setup_menu_scene(engine)
 setup_level_1_scene(engine)
 
-engine.set_active_scene("Level 1")
+engine.set_active_scene("Menu")
 
 engine.run()
