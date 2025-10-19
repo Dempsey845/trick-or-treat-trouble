@@ -20,6 +20,7 @@ class TrickOrTreatPrompt(ScriptComponent):
         color = (255, 0, 0) if self.trick else (0, 255, 0)
 
         label = UILabel(text, font_size=60, color=color)
+        label.fade_out(speed=3)
         self.game_object.add_component(label)
 
     def update(self, dt: float) -> None:

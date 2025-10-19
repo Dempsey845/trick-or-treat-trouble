@@ -30,7 +30,7 @@ class Player(ScriptComponent):
 
         candy_label_ob = GameObject("Candy Label", z_index=100)
         candy_label_ob.add_component(UITransform(relative=True, width=0.15, height=0.05, y=0.025, x=0.05, debug=False, anchor="topleft"))
-        candy_label = UILabel("Candy: ", font_size=40)
+        candy_label = UILabel("Candy: ", font_size=40, font_path="fonts/rainyhearts.ttf")
         candy_label_ob.add_component(candy_label)
 
         self.game_object.scene.instantiate_game_object(candy_label_ob)
@@ -87,5 +87,6 @@ class Player(ScriptComponent):
         lm.deregister_player()
 
     def on_disabled(self):
+        HouseManager.get_instance().restart()
         lm = LevelManager.get_instance()
         lm.deregister_player()

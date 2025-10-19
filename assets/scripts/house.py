@@ -102,13 +102,21 @@ class House(ScriptComponent):
                     self.game_object.scene.instantiate_game_object(cobweb_3)
                 else:
                     self.game_object.scene.instantiate_game_object(cobweb_4)
+                self.room_for_bucket = False
             else:
                 if random.randint(0, 2) == 0:
                     scarecrow = GameObject("Scarecrow", z_index=0, x=x + 64, y=y + self.house_height // 2)
                     scarecrow.add_component(Scarecrow())
                     self.game_object.scene.instantiate_game_object(scarecrow)
+                    self.room_for_bucket = False
                 else:
                     self.room_for_bucket = True
+        else:
+            self.room_for_bucket = True
+
+        self.can_spawn_bucket = False
+        self.spawn_bucket_timer = 0.0
+        self.is_trick = False
 
         HouseManager.get_instance().register_house(self)
 

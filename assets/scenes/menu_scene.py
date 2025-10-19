@@ -1,3 +1,7 @@
+from assets.scripts.background_music import BackgroundMusic
+from cogworks.components.background import Background
+from cogworks.components.sprite import Sprite
+
 from assets.scripts.level_manager import LevelManager
 from cogworks.components.ui.ui_button import UIButton
 from cogworks.components.ui.ui_image import UIImage
@@ -12,40 +16,43 @@ def setup_menu_scene(engine):
 
     def start_level(go):
         LevelManager.difficulty = "easy"
-        engine.set_active_scene("Level 1")
+        engine.set_active_scene("Introduction")
 
     def start_hard_level(go):
         LevelManager.difficulty = "hard"
-        engine.set_active_scene("Level 1")
+        engine.set_active_scene("Introduction")
 
     def exit_game(go):
         engine.quit()
 
     # Create a layout
     layout = GameObject("Menu Layout")
-    layout.add_component(UITransform(x=0.5, y=0.6, width=1, height=1, anchor="center"))
+    layout.add_component(UITransform(x=0.4, y=1, width=1, height=1, anchor="center"))
     layout.add_component(UILayout(vertical=True, spacing=40))
     menu_scene.add_game_object(layout)
 
-    # Logo
-    logo = GameObject("Logo Image")
-    logo.add_component(UITransform(width=0.5, height=0.2, debug=False))
-    logo.add_component(UIImage("images/tot_logo_large.png"))
-    layout.add_child(logo)
-
     play_btn = GameObject("Play Button")
-    play_btn.add_component(UITransform(width=0.25, height=0.1))
-    play_btn.add_component(UIButton("Play (Easy)", font_size=40, on_click=start_level, border_radius=20))
+    play_btn.add_component(UITransform(width=0.15, height=0.05))
+    play_btn.add_component(UIButton("Play (Easy)", bg_color=(20, 20, 20), font_size=40, font_path="fonts/rainyhearts.ttf", on_click=start_level, border_radius=10))
     layout.add_child(play_btn)
 
     play_hard_btn = GameObject("Play Button")
-    play_hard_btn.add_component(UITransform(width=0.25, height=0.1))
-    play_hard_btn.add_component(UIButton("Play (Hard)", font_size=40, on_click=start_hard_level, border_radius=20))
+    play_hard_btn.add_component(UITransform(width=0.15, height=0.05))
+    play_hard_btn.add_component(UIButton("Play (Hard)", bg_color=(20, 20, 20), font_size=40, font_path="fonts/rainyhearts.ttf", on_click=start_hard_level, border_radius=10))
     layout.add_child(play_hard_btn)
 
     exit_btn = GameObject("Exit Button")
-    exit_btn.add_component(UITransform(width=0.25, height=0.1))
-    exit_btn.add_component(UIButton("Exit", font_size=40, on_click=exit_game, border_radius=20))
+    exit_btn.add_component(UITransform(width=0.15, height=0.05))
+    exit_btn.add_component(UIButton("Exit", bg_color=(20, 20, 20), font_size=40, font_path="fonts/rainyhearts.ttf", on_click=exit_game, border_radius=10))
     layout.add_child(exit_btn)
+
+    background_music = GameObject("Background Music")
+    background_music.add_component(BackgroundMusic("sounds/menu_music.mp3"))
+    menu_scene.add_game_object(background_music)
+
+    background = GameObject("Background", z_index=-1)
+    background.add_component(Sprite("images/menu_background.png"))
+    background.add_component(Background())
+    menu_scene.add_game_object(background)
 
     return menu_scene

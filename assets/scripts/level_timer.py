@@ -23,7 +23,7 @@ class LevelTimer(ScriptComponent):
         self.game_object.add_component(UITransform(
             anchor="center", relative=True, x=0.5, y=0.10, width=0.15, height=0.05, debug=False
         ))
-        self.label = UILabel("Time: 7:15 PM")
+        self.label = UILabel("Time: 7:15 PM", font_path="fonts/rainyhearts.ttf",)
         self.game_object.add_component(self.label)
 
         self.timer = self.level_time

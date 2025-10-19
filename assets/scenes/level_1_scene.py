@@ -49,7 +49,7 @@ def setup_level_1_scene(engine):
 
     exit_btn = GameObject("Exit Button", z_index=50)
     exit_btn.add_component(UITransform(relative=True, x=0.9, y=0.02, width=0.03, height=0.03))
-    exit_btn.add_component(UIButton("X", font_size=20, bg_color=(255, 0, 0), on_click=exit_level, border_radius=10))
+    exit_btn.add_component(UIButton("X", font_size=20, font_path="fonts/rainyhearts.ttf", bg_color=(255, 0, 0), on_click=exit_level, border_radius=10))
     level_1_scene.add_game_object(exit_btn)
 
     house_width = 32
@@ -110,7 +110,7 @@ def setup_level_1_scene(engine):
     time_label.add_component(UITransform(
         anchor="center", relative=True, x=0.5, y=0.05, width=0.15, height=0.05, debug=False
     ))
-    time_label.add_component(UILabel("Time To Finish: 9:00 PM"))
+    time_label.add_component(UILabel("Time To Finish: 9:00 PM", font_path="fonts/rainyhearts.ttf"))
     time_label.add_component(TimeToFinish())
 
 

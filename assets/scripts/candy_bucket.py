@@ -25,7 +25,7 @@ class CandyBucket(ScriptComponent):
 
     def start(self) -> None:
         self.game_object.add_component(Sprite(image_path="images/candy_bucket.png", pixel_art_mode=True))
-        self.game_object.add_component(TriggerCollider(layer="Candy Bucket", layer_mask=["Player"], debug=True))
+        self.game_object.add_component(TriggerCollider(layer="Candy Bucket", layer_mask=["Player"], debug=False))
         self.input = InputManager.get_instance()
 
     def on_trigger_stay(self, other):

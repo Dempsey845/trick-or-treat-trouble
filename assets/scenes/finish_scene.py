@@ -1,12 +1,15 @@
+from assets.scripts.background_music import BackgroundMusic
+from cogworks.components.sprite import Sprite
+
+from cogworks.components.background import Background
+
 from cogworks.components.ui.ui_button import UIButton
-from cogworks.components.ui.ui_image import UIImage
 from cogworks.components.ui.ui_label import UILabel
 from cogworks.components.ui.ui_layout import UILayout
 from cogworks.components.ui.ui_transform import UITransform
 from cogworks.game_object import GameObject
 
 from assets.scripts.candy_collected_label import CandyCollectedLabel
-from assets.scripts.level_manager import LevelManager
 
 
 def setup_finish_scene(engine):
@@ -24,11 +27,6 @@ def setup_finish_scene(engine):
     layout.add_component(UILayout(vertical=True, spacing=40))
     menu_scene.add_game_object(layout)
 
-    logo = GameObject("Logo Image")
-    logo.add_component(UITransform(width=0.5, height=0.2, debug=False))
-    logo.add_component(UIImage("images/tot_logo_large.png"))
-    layout.add_child(logo)
-
     label = GameObject("Candy Label")
     label.add_component(UITransform(width=0.25, height=0.1))
     label.add_component(UILabel(f"You collected candy!", font_size=35))
@@ -37,12 +35,21 @@ def setup_finish_scene(engine):
 
     play_btn = GameObject("Play Button")
     play_btn.add_component(UITransform(width=0.25, height=0.1))
-    play_btn.add_component(UIButton("Restart", font_size=40, on_click=start_level, border_radius=20))
+    play_btn.add_component(UIButton("Restart", bg_color=(0, 0, 0), font_path="fonts/rainyhearts.ttf", font_size=40, on_click=start_level, border_radius=20))
     layout.add_child(play_btn)
 
     menu_btn = GameObject("Menu Button")
     menu_btn.add_component(UITransform(width=0.25, height=0.1))
-    menu_btn.add_component(UIButton("Menu", font_size=40, on_click=go_to_menu, border_radius=20))
+    menu_btn.add_component(UIButton("Menu", bg_color=(0, 0, 0), font_path="fonts/rainyhearts.ttf", font_size=40, on_click=go_to_menu, border_radius=20))
     layout.add_child(menu_btn)
+
+    background = GameObject("Background", z_index=-1)
+    background.add_component(Sprite("images/introduction_background.png"))
+    background.add_component(Background())
+    menu_scene.add_game_object(background)
+
+    background_music = GameObject("Background Music")
+    background_music.add_component(BackgroundMusic("sounds/music.mp3"))
+    menu_scene.add_game_object(background_music)
 
     return menu_scene

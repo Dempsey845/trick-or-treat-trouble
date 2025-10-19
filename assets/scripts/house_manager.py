@@ -12,6 +12,8 @@ class HouseManager(ScriptComponent):
         self.minimum_trick = 10
         self.minimum_treat = 10
         self._balanced = False
+        self.trick_house_amount = 0
+        self.treat_house_amount = 0
 
     @classmethod
     def get_instance(cls):
@@ -24,38 +26,27 @@ class HouseManager(ScriptComponent):
         self.houses.add(house)
 
         # Once enough houses are registered, try balancing them
-        if len(self.houses) >= (self.minimum_trick + self.minimum_treat):
+        if len(self.houses) >= 20:
             self.ensure_minimums()
 
     def ensure_minimums(self):
-        """Ensures at least 10 trick and 10 treat houses exist."""
         if self._balanced:
             return  # Avoid rebalancing repeatedly
 
-        houses = list(self.houses)
-        trick_houses = [h for h in houses if h.is_trick]
-        treat_houses = [h for h in houses if not h.is_trick]
-
-        # Balance trick houses
-        if len(trick_houses) < self.minimum_trick:
-            need_more = self.minimum_trick - len(trick_houses)
-            available = [h for h in treat_houses if not h.is_trick]
-            to_flip = random.sample(available, min(len(available), need_more))
-            for h in to_flip:
-                h.is_trick = True
-
         # Balance treat houses
-        houses = list(self.houses)  # refresh after flips
-        trick_houses = [h for h in houses if h.is_trick]
-        treat_houses = [h for h in houses if not h.is_trick]
+        houses = list(self.houses)
 
-        if len(treat_houses) < self.minimum_treat:
-            need_more = self.minimum_treat - len(treat_houses)
-            available = [h for h in trick_houses if h.is_trick]
-            to_flip = random.sample(available, min(len(available), need_more))
-            for h in to_flip:
-                h.is_trick = False
+        for i in range(10):
+            rand_house = random.choice(houses)
+            rand_house.is_trick = True
 
+        for h in houses:
+            if h.is_trick:
+                self.trick_house_amount += 1
+            else:
+                self.treat_house_amount += 1
+
+        print(f"Trick house: {self.trick_house_amount} | Treat houses: {self.treat_house_amount}")
         self._balanced = True
 
     def get_random_trick_house(self):
@@ -73,3 +64,9 @@ class HouseManager(ScriptComponent):
     def get_random_treat_house_door_pos(self):
         house = self.get_random_treat_house()
         return house.door_pos if house else None
+
+    def restart(self):
+        self.houses = weakref.WeakSet()
+        self._balanced = False
+        self.trick_house_amount = 0
+        self.treat_house_amount = 0
