@@ -42,15 +42,15 @@ class PlayerMovement(ScriptComponent):
         self.input_x = 0
         self.input_y = 0
 
-        if self.input.is_key_down(pygame.K_w):
+        if self.input.is_key_down(pygame.K_w) or self.input.is_key_down(pygame.K_UP):
             self.input_y = -1
-        elif self.input.is_key_down(pygame.K_s):
+        elif self.input.is_key_down(pygame.K_s) or self.input.is_key_down(pygame.K_DOWN):
             self.input_y = 1
 
-        if self.input.is_key_down(pygame.K_a):
+        if self.input.is_key_down(pygame.K_a) or self.input.is_key_down(pygame.K_LEFT):
             self.input_x = -1
             self.sprite.flip_x = self.invert_multiplier == 1
-        elif self.input.is_key_down(pygame.K_d):
+        elif self.input.is_key_down(pygame.K_d) or self.input.is_key_down(pygame.K_RIGHT):
             self.input_x = 1
             self.sprite.flip_x = not self.invert_multiplier == 1
 
@@ -71,6 +71,7 @@ class PlayerMovement(ScriptComponent):
             )
         else:
             rb.desired_velocity = 0, 0
+
 
     def check_bounds(self):
         left_bound = 20

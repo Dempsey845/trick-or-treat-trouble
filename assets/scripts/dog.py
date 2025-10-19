@@ -1,3 +1,4 @@
+from cogworks.components.audio_source import AudioSource
 from cogworks.components.sprite import Sprite
 from cogworks.components.sprite_animation import SpriteAnimation
 from assets.scripts.chasing_enemy import ChasingEnemy
@@ -9,6 +10,11 @@ class Dog(ChasingEnemy):
         self.start_attack_cooldown()
         self.sprite = Sprite("images/dog/dog1.png", pixel_art_mode=True)
         self.game_object.add_component(self.sprite)
+
+        audio_source = AudioSource("sounds/dog_growling.mp3", loop=True, volume=0.5, max_distance=700)
+        audio_source.play()
+        self.game_object.add_component(audio_source)
+
         self._setup_animation()
 
     def _setup_animation(self):

@@ -1,3 +1,4 @@
+from assets.scripts.audio_clip import AudioClip
 from cogworks import GameObject
 from cogworks.components.script_component import ScriptComponent
 from cogworks.components.sprite import Sprite
@@ -44,3 +45,10 @@ class Scarecrow(ScriptComponent):
         stick = GameObject("Stick", x=x, y=y, scale_x=1.5, scale_y=1.5)
         stick.add_component(Stick(player_x, player_y, speed))
         self.game_object.scene.instantiate_game_object(stick)
+        self.spawn_audio_clip()
+
+    def spawn_audio_clip(self):
+        x, y = self.game_object.transform.get_world_position()
+        audio_clip = GameObject("Audio Clip", x=x, y=y)
+        audio_clip.add_component(AudioClip(duration=1, audio_clip_path="sounds/shoot.wav", fade_out=True))
+        self.game_object.scene.instantiate_game_object(audio_clip)

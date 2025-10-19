@@ -1,3 +1,9 @@
+from assets.scripts.time_to_finish import TimeToFinish
+from cogworks.components.ui.ui_label import UILabel
+
+from assets.scripts.background_music import BackgroundMusic
+from assets.scripts.level_manager import LevelManager
+
 from cogworks import GameObject
 from cogworks.components.sprite import Sprite
 from cogworks.components.ui.ui_button import UIButton
@@ -9,8 +15,6 @@ from assets.scripts.house import House
 from assets.scripts.level_timer import LevelTimer
 from assets.scripts.player import Player
 from assets.scripts.road_manager import RoadManager
-from assets.scripts.scarecrow import Scarecrow
-from assets.scripts.witch_head import WitchHead
 
 
 def add_tiles(scene, y_range, x_range, image_path, z_index, skip_x_range=None):
@@ -34,6 +38,11 @@ def setup_level_1_scene(engine):
 
     player_ob = GameObject("Player", z_index=1,  x=level_width/2, y=level_height/2, scale_x=2, scale_y=2)
     player_ob.add_component(Player())
+
+    music = GameObject("Music")
+    music.add_component(BackgroundMusic())
+    level_1_scene.add_game_object(music)
+
 
     def exit_level(go):
         engine.set_active_scene("Menu")
@@ -97,6 +106,14 @@ def setup_level_1_scene(engine):
     max_y = 1080 - window_height//2
     camera_controlled_ob.add_component(CameraController(target_object=player_ob, max_y=max_y, min_y=window_height//2, max_x=max_x, min_x=window_width//2))
 
+    time_label = GameObject("Time2Finish Label", z_index=50)
+    time_label.add_component(UITransform(
+        anchor="center", relative=True, x=0.5, y=0.05, width=0.15, height=0.05, debug=False
+    ))
+    time_label.add_component(UILabel("Time To Finish: 9:00 PM"))
+    time_label.add_component(TimeToFinish())
+
+
     level_timer_ob = GameObject("Level Timer", z_index=50)
     level_timer_ob.add_component(LevelTimer())
 
@@ -105,5 +122,6 @@ def setup_level_1_scene(engine):
     level_1_scene.add_game_object(road_manager)
     level_1_scene.add_game_object(camera_controlled_ob)
     level_1_scene.add_game_object(level_timer_ob)
+    level_1_scene.add_game_object(time_label)
 
     return level_1_scene

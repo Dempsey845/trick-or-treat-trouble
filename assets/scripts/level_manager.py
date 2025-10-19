@@ -2,6 +2,8 @@ import weakref
 
 class LevelManager:
     _instance = None
+    candy_collected = 0
+    difficulty = "hard"
 
     def __init__(self):
         # Only allow initialization once

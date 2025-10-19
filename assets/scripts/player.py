@@ -1,5 +1,7 @@
 import random
 
+from cogworks.components.audio_listener import AudioListener
+
 from cogworks import GameObject
 from cogworks.components.linerenderer import LineRenderer
 from cogworks.components.rigidbody2d import Rigidbody2D
@@ -46,11 +48,13 @@ class Player(ScriptComponent):
         self.game_object.add_component(player_animation_controller)
 
         scale = self.game_object.transform.local_scale_x
-        player_trigger_collider = TriggerCollider(debug=False, width=12 * scale, height=14 * scale, layer_mask=["Candy", "House", "Cobweb", "Projectile"], layer="Player")
+        player_trigger_collider = TriggerCollider(debug=False, width=12 * scale, height=14 * scale, layer_mask=["Candy", "House", "Cobweb", "Projectile", "Candy Bucket"], layer="Player")
         self.game_object.add_component(player_trigger_collider)
 
         player_candy = PlayerCandy(candy_label)
         self.game_object.add_component(player_candy)
+
+        self.game_object.scene.camera.get_component(AudioListener).set_target_transform(self.game_object.transform)
 
     def add_marker(self):
         self.remove_marker()

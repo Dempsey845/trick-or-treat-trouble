@@ -2,6 +2,9 @@ import random
 import weakref
 
 import pygame
+
+from assets.scripts.audio_clip import AudioClip
+from assets.scripts.candy_bucket import CandyBucket
 from cogworks import GameObject
 from cogworks.components.rigidbody2d import Rigidbody2D
 from cogworks.components.script_component import ScriptComponent
@@ -33,6 +36,9 @@ class House(ScriptComponent):
         self.door_pos = (0, 0)
         self.is_trick = False
         self.spawn_bottom_webs = spawn_bottom_webs
+        self.room_for_bucket = False
+        self.can_spawn_bucket = False
+        self.spawn_bucket_timer = 0.0
 
     def start(self) -> None:
         x, y = self.game_object.transform.get_local_position()
@@ -91,17 +97,36 @@ class House(ScriptComponent):
             self.game_object.scene.instantiate_game_object(cobweb_2)
 
         if self.spawn_bottom_webs:
-            if random.randint(0, 1) == 0:
+            if random.randint(0, 2) == 0:
                 if random.randint(0, 1) == 0:
                     self.game_object.scene.instantiate_game_object(cobweb_3)
                 else:
                     self.game_object.scene.instantiate_game_object(cobweb_4)
             else:
-                scarecrow = GameObject("Scarecrow", z_index=0, x=x + 64, y=y + self.house_height // 2)
-                scarecrow.add_component(Scarecrow())
-                self.game_object.scene.instantiate_game_object(scarecrow)
+                if random.randint(0, 2) == 0:
+                    scarecrow = GameObject("Scarecrow", z_index=0, x=x + 64, y=y + self.house_height // 2)
+                    scarecrow.add_component(Scarecrow())
+                    self.game_object.scene.instantiate_game_object(scarecrow)
+                else:
+                    self.room_for_bucket = True
 
         HouseManager.get_instance().register_house(self)
+
+    def update(self, dt: float) -> None:
+        if self.can_spawn_bucket:
+            self.spawn_bucket_timer += dt
+
+            if self.spawn_bucket_timer >= 5:
+                self.spawn_bucket()
+                self.spawn_bucket_timer = 0
+                self.spawn_bucket()
+                self.can_spawn_bucket = False
+
+    def spawn_bucket(self):
+        x, y = self.game_object.transform.get_local_position()
+        candy_bucket = GameObject("Candy Bucket", scale_x=3, scale_y=3, x=x + 64, y=y + self.house_height // 2)
+        candy_bucket.add_component(CandyBucket())
+        self.game_object.scene.instantiate_game_object(candy_bucket)
 
     def knock(self):
         is_trick = self.is_trick
@@ -109,6 +134,8 @@ class House(ScriptComponent):
         prompt = GameObject(name=name)
         prompt.add_component(TrickOrTreatPrompt(is_trick))
         self.game_object.scene.instantiate_game_object(prompt)
+
+        self.spawn_audio_clip()
 
         player = self.player_ref()
         if player:
@@ -131,7 +158,15 @@ class House(ScriptComponent):
         if prompt:
             prompt.destroy()
 
+        self.can_spawn_bucket = self.room_for_bucket
+
         self.game_object.get_component("Sprite").change_image("images/house_base_closed.png")
+
+    def spawn_audio_clip(self):
+        x, y = self.game_object.transform.get_world_position()
+        audio_clip = GameObject("Audio Clip", x=x, y=y)
+        audio_clip.add_component(AudioClip(duration=1, audio_clip_path="sounds/knock.mp3", fade_out=True))
+        self.game_object.scene.instantiate_game_object(audio_clip)
 
     def on_trigger_stay(self, other):
         if not self.input:

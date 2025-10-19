@@ -1,3 +1,4 @@
+from assets.scripts.level_manager import LevelManager
 from cogworks.components.ui.ui_button import UIButton
 from cogworks.components.ui.ui_image import UIImage
 from cogworks.components.ui.ui_label import UILabel
@@ -10,6 +11,11 @@ def setup_menu_scene(engine):
     menu_scene = engine.create_scene("Menu")
 
     def start_level(go):
+        LevelManager.difficulty = "easy"
+        engine.set_active_scene("Level 1")
+
+    def start_hard_level(go):
+        LevelManager.difficulty = "hard"
         engine.set_active_scene("Level 1")
 
     def exit_game(go):
@@ -29,8 +35,13 @@ def setup_menu_scene(engine):
 
     play_btn = GameObject("Play Button")
     play_btn.add_component(UITransform(width=0.25, height=0.1))
-    play_btn.add_component(UIButton("Play", font_size=40, on_click=start_level, border_radius=20))
+    play_btn.add_component(UIButton("Play (Easy)", font_size=40, on_click=start_level, border_radius=20))
     layout.add_child(play_btn)
+
+    play_hard_btn = GameObject("Play Button")
+    play_hard_btn.add_component(UITransform(width=0.25, height=0.1))
+    play_hard_btn.add_component(UIButton("Play (Hard)", font_size=40, on_click=start_hard_level, border_radius=20))
+    layout.add_child(play_hard_btn)
 
     exit_btn = GameObject("Exit Button")
     exit_btn.add_component(UITransform(width=0.25, height=0.1))
