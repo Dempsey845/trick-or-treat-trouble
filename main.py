@@ -12,6 +12,6 @@ setup_introduction_scene(engine)
 setup_level_1_scene(engine)
 setup_finish_scene(engine)
 
-engine.set_active_scene("Level 1")
+engine.set_active_scene("Menu")
 
 engine.run()
