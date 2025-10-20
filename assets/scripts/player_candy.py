@@ -7,6 +7,7 @@ from assets.scripts.audio_clip import AudioClip
 from cogworks.components.script_component import ScriptComponent
 from cogworks.pygame_wrappers.input_manager import InputManager
 
+from assets.scripts.candy_explosion_effect import CandyExplosionEffect
 from assets.scripts.level_manager import LevelManager
 
 
@@ -37,6 +38,12 @@ class PlayerCandy(ScriptComponent):
         LevelManager.candy_collected = self.candy
         self.spawn_audio_clip("sounds/hit.wav", 0.5, 0.5)
         self.update_text()
+
+        x, y = LevelManager.get_instance().get_player_position()
+        effect = GameObject("Candy Effect", z_index=9, x=x, y=y)
+        particle_effect = CandyExplosionEffect(amount)
+        effect.add_component(particle_effect)
+        self.game_object.scene.instantiate_game_object(effect)
 
     def spawn_audio_clip(self, clip_path: str, duration: float, volume:float=1):
         x, y = self.game_object.transform.get_world_position()

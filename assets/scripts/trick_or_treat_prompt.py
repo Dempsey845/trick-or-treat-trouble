@@ -19,7 +19,7 @@ class TrickOrTreatPrompt(ScriptComponent):
         text = "Trick!" if self.trick else "Treat!"
         color = (255, 0, 0) if self.trick else (0, 255, 0)
 
-        label = UILabel(text, font_size=60, color=color)
+        label = UILabel(text, font_size=60, color=color, font_path="fonts/rainyhearts.ttf")
         label.fade_out(speed=3)
         self.game_object.add_component(label)
 

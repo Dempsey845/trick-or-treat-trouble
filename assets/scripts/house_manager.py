@@ -46,7 +46,6 @@ class HouseManager(ScriptComponent):
             else:
                 self.treat_house_amount += 1
 
-        print(f"Trick house: {self.trick_house_amount} | Treat houses: {self.treat_house_amount}")
         self._balanced = True
 
     def get_random_trick_house(self):
