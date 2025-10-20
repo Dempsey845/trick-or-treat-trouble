@@ -29,7 +29,7 @@ def setup_finish_scene(engine):
 
     label = GameObject("Candy Label")
     label.add_component(UITransform(width=0.25, height=0.1))
-    label.add_component(UILabel(f"You collected candy!", font_size=35))
+    label.add_component(UILabel(f"You collected candy!", font_size=35, font_path="fonts/rainyhearts.ttf"))
     label.add_component(CandyCollectedLabel())
     layout.add_child(label)
 

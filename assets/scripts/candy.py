@@ -17,7 +17,7 @@ class Candy(ScriptComponent):
         super().__init__()
 
     def start(self) -> None:
-        self.game_object.add_component(Sprite("images/circle.png"))
+        self.game_object.add_component(Sprite("images/candy.png", pixel_art_mode=True))
         self.game_object.add_component(TriggerCollider(debug=False, layer_mask=["Player"], layer="Candy"))
 
     def spawn_ghost(self):
@@ -33,10 +33,16 @@ class Candy(ScriptComponent):
         self.game_object.scene.instantiate_game_object(audio_clip)
 
     def on_trigger_enter(self, other):
-        spawn_ghost = random.randint(0, 2) == 0
-        if spawn_ghost:
-            self.spawn_ghost()
+        player_candy = other.game_object.get_component(PlayerCandy)
+
+        if player_candy.candy <= 0:
+            player_candy.add_candy()
         else:
-            other.game_object.get_component(PlayerCandy).add_candy()
+            spawn_ghost = random.randint(0, 2) == 0
+            if spawn_ghost:
+                self.spawn_ghost()
+            else:
+                player_candy.add_candy()
+
         self.spawn_audio_clip()
         self.game_object.destroy()

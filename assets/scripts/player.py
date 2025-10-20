@@ -8,6 +8,7 @@ from cogworks.components.rigidbody2d import Rigidbody2D
 from cogworks.components.script_component import ScriptComponent
 from cogworks.components.sprite import Sprite
 from cogworks.components.trigger_collider import TriggerCollider
+from cogworks.components.ui.ui_image import UIImage
 from cogworks.components.ui.ui_label import UILabel
 from cogworks.components.ui.ui_transform import UITransform
 
@@ -28,9 +29,15 @@ class Player(ScriptComponent):
         lm = LevelManager.get_instance()
         lm.register_player(self.game_object)
 
+        candy_image_ob = GameObject("Candy Image", z_index=99)
+        candy_image_ob.add_component(UITransform(relative=True, width=0.05, height=0.05, y=0.05, x=0.025, debug=False, anchor="center"))
+        candy_image = UIImage("images/candy.png")
+        candy_image_ob.add_component(candy_image)
+        self.game_object.scene.instantiate_game_object(candy_image_ob)
+
         candy_label_ob = GameObject("Candy Label", z_index=100)
-        candy_label_ob.add_component(UITransform(relative=True, width=0.15, height=0.05, y=0.025, x=0.05, debug=False, anchor="topleft"))
-        candy_label = UILabel("Candy: ", font_size=40, font_path="fonts/rainyhearts.ttf")
+        candy_label_ob.add_component(UITransform(relative=True, width=0.05, height=0.05, y=0.025, x=0.05, debug=False, anchor="topleft"))
+        candy_label = UILabel("300", font_size=40, font_path="fonts/rainyhearts.ttf", anchor="topleft")
         candy_label_ob.add_component(candy_label)
 
         self.game_object.scene.instantiate_game_object(candy_label_ob)

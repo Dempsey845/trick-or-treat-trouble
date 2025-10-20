@@ -72,7 +72,7 @@ class ChasingEnemy(ScriptComponent):
         px, py = player_pos
         distance = math.hypot(px - ex, py - ey)
 
-        if distance <= self.attack_distance + 5:
+        if distance <= self.attack_distance + 10:
             self.perform_attack()
 
     def get_target_position(self):

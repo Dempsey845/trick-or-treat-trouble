@@ -47,4 +47,4 @@ class PlayerCandy(ScriptComponent):
     def update_text(self):
         candy_label = self.candy_label_ref()
         if candy_label:
-            candy_label.set_text(f"Candy: {self.candy}")
+            candy_label.set_text(f"{self.candy}")

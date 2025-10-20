@@ -38,7 +38,7 @@ class CandyBucket(ScriptComponent):
                 player.get_component("PlayerCandy").add_candy(self.candy_amount)
 
             x, y = self.game_object.transform.get_local_position()
-            man = GameObject("AngryMan", x=x, y=y, scale_x=2, scale_y=2)
+            man = GameObject("AngryMan", x=x, y=y, scale_x=4, scale_y=4)
             man.add_component(AngryMan(home_position=(x, y)))
             self.game_object.scene.instantiate_game_object(man)
 
@@ -54,7 +54,6 @@ class CandyBucket(ScriptComponent):
         prompt = GameObject("Prompt", z_index=50)
         x, y = self.game_object.transform.get_world_position()
         bucket_height = self.game_object.get_component(TriggerCollider).height
-        print(bucket_height)
         prompt.add_component(InteractPrompt(x, y + (bucket_height // 2) - 25))
 
         self.game_object.scene.instantiate_game_object(prompt)

@@ -12,7 +12,7 @@ class RoadManager(ScriptComponent):
         self.web_scale = 2.5
         self.min_distance = 16 * self.web_scale + 10
 
-        self.candy_scale = 0.5
+        self.candy_scale = 2
         self.candy_size = 40 * self.candy_scale
         self.candy_min_distance = self.candy_size + 5  # Minimum distance between candy/cobwebs
 
